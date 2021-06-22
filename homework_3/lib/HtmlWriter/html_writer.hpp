@@ -6,6 +6,10 @@
 #define HTML_WRITER_H_
 
 #include <string>
+#include <boost/filesystem.hpp>
+#include "fmt/core.h"
+
+
 
 namespace html_writer {
 

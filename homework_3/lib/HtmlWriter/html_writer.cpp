@@ -1,6 +1,7 @@
 #include "html_writer.hpp"
-#include "fmt/core.h"
 #include <string>
+
+namespace fs = boost::filesystem;
 
 void OpenDocument(){
     fmt::print("<!DOCTYPE html>\n<html>\n");
@@ -35,9 +36,13 @@ void CloseRow(){
 }
 
 void AddImage(const std::string& img_path, float score, bool highlight = false){
-    std::string style_string = highlight ? "border: 5px solid green;" : "";
-    fmt::print("<div class=\"column\" style=\"{0}\">\n<h2>{1}</h2>\n<img src=\"{1}\" />\n<p>score = {2}</p>\n</div>\n", style_string, img_path, std::to_string(score));
-    
+    if(fs::path(img_path).extension() == ".png" || fs::path(img_path).extension() == ".jpg"){
+        std::string style_string = highlight ? "border: 5px solid green;" : "";
+        fmt::print("<div class=\"column\" style=\"{0}\">\n<h2>{1}</h2>\n<img src=\"{2}\" />\n<p>score = {3}</p>\n</div>\n", 
+        style_string, fs::path(img_path).filename().string(), img_path, fmt::format("{:.2f}", score));
+    }else{
+        fmt::print(stderr, "Invalid file extension");
+    }
 }
 
 int main(){
