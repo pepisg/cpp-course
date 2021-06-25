@@ -9,6 +9,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <lib/HtmlWriter/html_writer.hpp>
 
 namespace image_browser {
 
