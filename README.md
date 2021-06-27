@@ -6,12 +6,12 @@ Thanks to them and to the University for posting this material and all the other
 
 ## Homework 2
 
-To test this homework follow the following instructions:
+To test this homework follow these instructions:
 
-1. Locate yourself inside the `/homework_2` folder, create a `/bin` folder and cd into it; rhen run cmake and build the project. To do all this at once type on a terminal:
+1. Locate yourself inside the `/homework_2` folder, create a `/bin` folder and cd into it; rhen run cmake and build the project. To do all this at once type on a terminal in the main folder:
 
     ```.sh
-    mkdir -p bin && cd bin && cmake .. && make && cd ..
+    cd homework_2 && mkdir -p bin && cd bin && cmake .. && make && cd ..
     ```
 
 2. The executables `./task_a` and `./task_b` will be created inside the `/bin` folder. You can run them like its stated in the homework description:
@@ -22,12 +22,12 @@ To test this homework follow the following instructions:
 
 ## Homework 3
 
-To test this homework follow the following instructions:
+To test this homework follow these instructions:
 
-1. Locate yourself inside the `/homework_3` folder, create a `/bin` folder and cd into it; rhen run cmake and build the project. To do all this at once type on a terminal:
+1. Locate yourself inside the `/homework_3` folder, create a `/bin` folder and cd into it; rhen run cmake and build the project. To do all this at once type on a terminal in the main folder:
 
     ```.sh
-    mkdir -p bin && cd bin && cmake .. && make && cd ..
+    cd homework_3 && mkdir -p bin && cd bin && cmake .. && make && cd ..
     ```
 
 2. The executable `./create_image_browser` will be created inside the `/bin` folder. You can run it like its stated in the homework description:
