@@ -15,8 +15,8 @@ void ipb::serialization::Serialize(const cv::Mat &m,
   bin_file.write(reinterpret_cast<char *>(&channels), sizeof(channels));
   bin_file.write(reinterpret_cast<char *>(&type), sizeof(type));
   bin_file.write(reinterpret_cast<char *>(&element_size), sizeof(element_size));
-  std::cout << rows << " " << element_size << " " << channels << " " << type
-            << std::endl;
+  // std::cout << rows << " " << element_size << " " << channels << " " << type
+  //           << std::endl;
   for (size_t i = 0; i < rows * cols * channels * element_size; i++) {
     bin_file.write(reinterpret_cast<char *>(&data[i]), sizeof(data[i]));
   }
@@ -44,21 +44,21 @@ cv::Mat ipb::serialization::Deserialize(const std::string &filename) {
   return m;
 }
 
-int main() {
-  auto detector = cv::xfeatures2d::SiftFeatureDetector::create();
-  auto extractor = cv::xfeatures2d::SiftDescriptorExtractor::create();
-  std::vector<cv::KeyPoint> keypoints;
-  cv::Mat image = cv::imread("../data/lenna.png", cv::IMREAD_UNCHANGED);
-  cv::Mat img_with_keypoints;
-  cv::Mat descriptors;
-  detector->detect(image, keypoints);
-  extractor->compute(image, keypoints, descriptors);
-  cv::drawKeypoints(image, keypoints, img_with_keypoints);
-  cv::namedWindow("serialized");
-  cv::namedWindow("deserialized");
-  ipb::serialization::Serialize(descriptors, "../test.bin");
-  cv::Mat deserialized_img = ipb::serialization::Deserialize("../test.bin");
-  cv::imshow("serialized", descriptors);
-  cv::imshow("deserialized", deserialized_img);
-  cv::waitKey(0);
-}
+// int main() {
+//   auto detector = cv::xfeatures2d::SiftFeatureDetector::create();
+//   auto extractor = cv::xfeatures2d::SiftDescriptorExtractor::create();
+//   std::vector<cv::KeyPoint> keypoints;
+//   cv::Mat image = cv::imread("../data/lenna.png", cv::IMREAD_UNCHANGED);
+//   cv::Mat img_with_keypoints;
+//   cv::Mat descriptors;
+//   detector->detect(image, keypoints);
+//   extractor->compute(image, keypoints, descriptors);
+//   cv::drawKeypoints(image, keypoints, img_with_keypoints);
+//   cv::namedWindow("serialized");
+//   cv::namedWindow("deserialized");
+//   ipb::serialization::Serialize(descriptors, "../test.bin");
+//   cv::Mat deserialized_img = ipb::serialization::Deserialize("../test.bin");
+//   cv::imshow("serialized", descriptors);
+//   cv::imshow("deserialized", deserialized_img);
+//   cv::waitKey(0);
+// }

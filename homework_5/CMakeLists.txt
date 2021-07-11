@@ -8,6 +8,24 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories("include")
 message(STATUS, ${OpenCV_INCLUDE_DIRS})
 
+add_library(
+    serialize_lib
+    src/serialize.cpp
+    include/serialize.hpp
+)
 
-add_executable(serialize src/serialize.cpp)
-target_link_libraries(serialize ${OpenCV_LIBS})
+add_library(
+    convert_dataset_lib
+    src/convert_dataset.cpp
+    include/convert_dataset.hpp
+)
+
+target_link_libraries(convert_dataset_lib serialize_lib)
+
+
+
+# add_executable(serialize src/serialize.cpp)
+# target_link_libraries(serialize ${OpenCV_LIBS})
+add_executable(convert_dataset src/convert_dataset.cpp)
+target_link_libraries(convert_dataset ${OpenCV_LIBS})
+target_link_libraries(convert_dataset serialize_lib)
