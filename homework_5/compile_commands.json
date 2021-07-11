@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "/home/pepis/Documents/cpp-course/homework_5/bin",
+    "command": "/usr/bin/c++   -I/home/pepis/Documents/cpp-course/homework_5/include -isystem /usr/local/include/opencv4    -std=gnu++17 -o CMakeFiles/serialize.dir/src/serialize.cpp.o -c /home/pepis/Documents/cpp-course/homework_5/src/serialize.cpp",
+    "file": "/home/pepis/Documents/cpp-course/homework_5/src/serialize.cpp"
+  }
+]
