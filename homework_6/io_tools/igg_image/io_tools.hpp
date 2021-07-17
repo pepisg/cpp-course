@@ -22,11 +22,11 @@ struct ImageData {
 
 /// Reads from a pgm image from ascii file. Returns empty ImageData if the path
 /// is not found or any errors have occurred while reading.
-ImageData ReadFromPgm(const std::string& file_name);
+ImageData ReadFromPgm(const std::string &file_name);
 
 /// Write image data into an ascii pgm file. Return true if successful.
-bool WriteToPgm(const ImageData& image_data, const std::string& file_name);
+bool WriteToPgm(const ImageData &image_data, const std::string &file_name);
 
-}  // namespace igg::io_tools
+} // namespace igg::io_tools
 
-#endif  // IGG_IMAGE_IO_TOOLS_HPP_
+#endif // IGG_IMAGE_IO_TOOLS_HPP_

@@ -9,11 +9,15 @@ class Image {
 
 public:
   Image();
-  Image(int rows, int cols) : rows_{rows}, cols_{cols} {};
+  Image(int rows, int cols);
 
 public:
   int rows() const;
   int cols() const;
+
+public:
+  int at(int row, int col) const;
+  int &at(int row, int col);
 
 public:
   bool FillFromPgm(const std::string &file_name);
@@ -23,9 +27,9 @@ public:
   std::vector<float> ComputeHistograms(int bins);
 
 private:
-  int rows_;
-  int cols_;
-  std::vector<uint8_t> data_;
+  int rows_ = 0;
+  int cols_ = 0;
+  std::vector<int> data_ = {};
 };
 
 } // namespace igg

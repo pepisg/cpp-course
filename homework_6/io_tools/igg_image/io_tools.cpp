@@ -47,10 +47,10 @@ bool WriteToPgm(const ImageData &image_data, const std::string &file_name) {
 
   out << "P2" << std::endl
       << image_data.rows << " " << image_data.cols << std::endl
-      << image_data.max_val << std::endl;
+      << unsigned(image_data.max_val) << std::endl;
   for (int r = 0; r < image_data.rows; ++r) {
     for (int c = 0; c < image_data.cols; ++c) {
-      out << image_data.data[r * image_data.cols + c] << " ";
+      out << unsigned(image_data.data[r * image_data.cols + c]) << " ";
     }
     out << std::endl;
   }
