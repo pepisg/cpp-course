@@ -2,6 +2,7 @@
 #define IMAGE_HPP_
 
 #include <iostream>
+#include <math.h>
 #include <vector>
 
 namespace igg {
@@ -24,7 +25,7 @@ public:
   void WriteToPgm(const std::string &file_name);
   void DownScale(int scale);
   void UpScale(int scale);
-  std::vector<float> ComputeHistograms(int bins);
+  std::vector<float> ComputeHistograms(int bins) const;
 
 private:
   int rows_ = 0;
