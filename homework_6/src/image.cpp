@@ -1,7 +1,7 @@
 #include <igg_image/io_tools.hpp>
 #include <image.hpp>
 
-int find_interval(std::vector<int> thresholds, int current_low,
+int find_interval(std::vector<int> &thresholds, int current_low,
                   int current_high, int value) {
   int mid_idx = current_low + (current_high - current_low) / 2;
   if (value - thresholds[mid_idx] >= 0 &&
