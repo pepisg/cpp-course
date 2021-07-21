@@ -20,6 +20,10 @@ add_library(
     include/convert_dataset.hpp
 )
 
+target_include_directories(convert_dataset_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+target_include_directories(serialize_lib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
 target_link_libraries(convert_dataset_lib serialize_lib)
 
 
