@@ -3,6 +3,8 @@
 
 #include <convert_dataset.hpp>
 #include <iostream>
+#include <opencv2/core.hpp>
+#include <opencv2/core/mat.hpp>
 #include <serialize.hpp>
 
 namespace ipb {
@@ -21,6 +23,21 @@ namespace ipb {
  * @return cv::Mat One unique Matrix representing all the $k$-means(stacked).
  */
 cv::Mat kMeans(const std::vector<cv::Mat> &descriptors, int k, int max_iter);
+
+struct Sift {
+  std::vector<int> descriptor;
+  int cluster;
+  float distance_to_cluster;
+
+  Sift(std::vector<int> d) { descriptor = d; }
+  float distance(Sift p) {
+    float d;
+    for (int i = 0; i < descriptor.size(); i++) {
+      d += pow((descriptor[i] - p.descriptor[i]), 2);
+    }
+    return d;
+  }
+};
 
 class BowDictionary {};
 

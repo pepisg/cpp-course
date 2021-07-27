@@ -37,15 +37,15 @@ ipb::serialization::sifts::LoadDataset(const std::filesystem::path &bin_path) {
   return image_vector;
 }
 
-int main() {
-  ipb::serialization::sifts::ConvertDataset(
-      "../../dataset/final_project/images-freiburg-x10/data1/");
-  auto img_vector = ipb::serialization::sifts::LoadDataset(
-      "../../dataset/final_project/bin/");
-  cv::namedWindow("serialized");
-  for (const auto &image : img_vector) {
-    cv::imshow("serialized", image);
-    cv::waitKey(0);
-  }
-  return 0;
-}
+// int main() {
+//   ipb::serialization::sifts::ConvertDataset(
+//       "../../dataset/final_project/images-freiburg-x10/data1/");
+//   auto img_vector = ipb::serialization::sifts::LoadDataset(
+//       "../../dataset/final_project/bin/");
+//   cv::namedWindow("serialized");
+//   for (const auto &image : img_vector) {
+//     cv::imshow("serialized", image);
+//     cv::waitKey(0);
+//   }
+//   return 0;
+// }

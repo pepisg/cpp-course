@@ -13,3 +13,4 @@ add_executable(bow src/bow.cpp)
 
 target_link_libraries(bow convert_dataset_lib)
 target_link_libraries(bow serialize_lib)
+target_link_libraries(bow ${OpenCV_LIBS})
