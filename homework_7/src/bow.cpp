@@ -3,34 +3,71 @@
 cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
                     int max_iter) {
 
-  std::vector<std::vector<float>> centroids;
+  std::vector<sift> centroids;
   centroids.reserve(k);
 
-  std::vector<Sift> sifts;
+  std::vector<sift> sifts;
 
   // Sift array initialization
   for (const auto &element : descriptors) {
     for (int i = 0; i < element.rows; i++) {
-      Sift sift = Sift(element.row(i));
-      sifts.emplace_back(sift);
+      sift descriptor = sift(element.row(i));
+      sifts.emplace_back(descriptor);
     }
   }
+  std::cout << "initialized\n";
 
   // Centroid Random initialization
-  for (int i = 0; i < k; i++) {
-    std::vector<float> centroid;
+  for (int16_t i = 0; i < k; i++) {
+    std::vector<int> centroid;
     centroid.reserve(128);
     for (int j = 0; j < 128; j++) {
-      centroid.emplace_back((float)(rand() % 255));
+      centroid.emplace_back((rand() % 255));
     }
-    centroids.emplace_back(centroid);
+    centroids.emplace_back(sift(centroid, i));
+    std::cout << i << std::endl;
   }
 
+  std::cout << "centroids\n";
+
   for (int iter = 0; iter < max_iter; iter++) {
-    for (const cv::Mat &sifts : descriptors) {
+
+    // calculate closest centroid for each point
+    for (sift &descriptor : sifts) {
+      for (const sift &centroid : centroids) {
+        unsigned long int d = descriptor.distance(centroid);
+        if (d < descriptor.distance_to_cluster) {
+          descriptor.distance_to_cluster = d;
+          descriptor.cluster = centroid.cluster;
+        }
+      }
+    }
+    for (sift &descriptor : sifts) {
+      std::cout << descriptor.cluster << " ";
+    }
+
+    std::cout << "closest centroids\n";
+
+    // Recalculate centroids
+    for (const sift &descriptor : sifts) {
+      // std::cout << descriptor.cluster << std::endl;
+      centroids.at(descriptor.cluster) += descriptor;
+      centroids.at(descriptor.cluster).associated_points++;
+    }
+    for (sift &centroid : centroids) {
+      if (centroid.associated_points > 0) {
+        centroid = centroid / centroid.associated_points;
+      }
+      centroid.associated_points = 0;
+      centroid.print();
     }
   }
+
+  // generate output Mat
   cv::Mat ans_mat;
+  for (const sift &centroid : centroids) {
+    ans_mat.push_back(centroid.descriptor);
+  }
   return ans_mat;
 }
 
@@ -40,6 +77,6 @@ int main() {
   for (const auto &element : sifts) {
     std::cout << " ---- " << element.size << " ---- " << std::endl;
   }
-  cv::Mat ans = ipb::kMeans(sifts, 50, 10);
-  std::cout << ans << std::endl;
+  cv::Mat ans = ipb::kMeans(sifts, 10, 10);
+  // std::cout << ans << std::endl;
 }
