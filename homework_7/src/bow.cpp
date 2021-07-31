@@ -1,5 +1,37 @@
 #include <bow.hpp>
 
+void debug_img(const std::vector<ipb::sift> &sifts,
+               const std::vector<ipb::sift> &centroids) {
+  cv::Mat image(1000, 1000, CV_8UC3);
+  int color_increment = 255 / centroids.size();
+  for (const ipb::sift &sift : sifts) {
+    cv::circle(image, cv::Point(sift.descriptor[0] * 6, sift.descriptor[1] * 6),
+               2,
+               cv::Scalar(255 - color_increment * sift.cluster,
+                          color_increment * sift.cluster, 0),
+               cv::FILLED);
+  }
+  for (const ipb::sift &centroid : centroids) {
+    cv::line(
+        image,
+        cv::Point(centroid.descriptor[0] * 6 - 5, centroid.descriptor[1] * 6),
+        cv::Point(centroid.descriptor[0] * 6 + 5, centroid.descriptor[1] * 6),
+        cv::Scalar(255 - color_increment * centroid.cluster,
+                   color_increment * centroid.cluster, 0),
+        2);
+    cv::line(
+        image,
+        cv::Point(centroid.descriptor[0] * 6, centroid.descriptor[1] * 6 - 5),
+        cv::Point(centroid.descriptor[0] * 6, centroid.descriptor[1] * 6 + 5),
+        cv::Scalar(255 - color_increment * centroid.cluster,
+                   color_increment * centroid.cluster, 0),
+        2);
+  }
+  cv::namedWindow("Debug Image");
+  cv::imshow("Debug Image", image);
+  cv::waitKey(0);
+}
+
 cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
                     int max_iter) {
 
@@ -20,8 +52,8 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
   // Centroid Random initialization
   for (int16_t i = 0; i < k; i++) {
     std::vector<int> centroid;
-    centroid.reserve(128);
-    for (int j = 0; j < 128; j++) {
+    centroid.reserve(sifts[0].descriptor.size());
+    for (int j = 0; j < sifts[0].descriptor.size(); j++) {
       centroid.emplace_back((rand() % 255));
     }
     centroids.emplace_back(sift(centroid, i));
@@ -62,6 +94,9 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
       centroid.print();
     }
   }
+
+  // visualize result
+  debug_img(sifts, centroids);
 
   // generate output Mat
   cv::Mat ans_mat;
