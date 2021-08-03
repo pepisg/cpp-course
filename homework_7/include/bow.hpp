@@ -42,27 +42,36 @@ struct sift {
     distance_to_cluster = d_to_clust;
   }
   unsigned long int distance(const sift &p) const {
-    unsigned long int d;
-    for (int i = 0; i < descriptor.size(); i++) {
+    unsigned long int d = 0;
+    for (int i = 0; i < 2; i++) {
       d += pow((descriptor[i] - p.descriptor[i]), 2);
     }
     return d;
   }
+  void reset() {
+    cluster = -1;
+    distance_to_cluster = pow(2, 62) - 1;
+  }
   void print() {
-    for (int i = 0; i < descriptor.size(); i++) {
+    for (int i = 0; i < 2; i++) {
       std::cout << descriptor[i] << " ";
     }
     std::cout << "\n";
   }
+  void clear() {
+    for (int i = 0; i < 2; i++) {
+      descriptor.at(i) = 0;
+    }
+  }
   sift &operator+=(sift const &obj) {
-    for (int i = 0; i < this->descriptor.size(); i++) {
-      this->descriptor.at(i) = this->descriptor[i] + obj.descriptor[i];
+    for (int i = 0; i < 2; i++) {
+      descriptor.at(i) += obj.descriptor[i];
     }
     return *this;
   }
   sift &operator/(int const &denom) {
-    for (int i = 0; i < descriptor.size(); i++) {
-      this->descriptor.at(i) = descriptor[i] / denom;
+    for (int i = 0; i < 2; i++) {
+      descriptor.at(i) = descriptor[i] / denom;
     }
     return *this;
   }

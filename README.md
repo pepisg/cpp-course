@@ -35,3 +35,9 @@ To test this homework follow these instructions:
     ```.sh
     ./bin/create_image_browser > web_app/test.html && xdg-open web_app/test.html
     ```
+
+## K-Means C++ implementation
+
+For the `homework_7` a k-means algorithm was implemented in the [bow.cpp](homework_7/src/bow.cpp). It can be seen in action in the image below:
+
+![ Alt text](/docs/k_means.gif)
