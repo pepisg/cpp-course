@@ -1,5 +1,28 @@
 #include <bow.hpp>
 
+void ipb::BowDictionary::set_max_iterations(int iterations) {
+  m_max_iterations = iterations;
+  recompute();
+}
+
+void ipb::BowDictionary::set_size(int size) {
+  m_n_words = size;
+  recompute();
+}
+
+void ipb::BowDictionary::set_descriptors(std::vector<cv::Mat> descriptors) {
+  m_descriptors = descriptors;
+  recompute();
+}
+
+void ipb::BowDictionary::set_params(int iterations, int size,
+                                    std::vector<cv::Mat> descriptors) {
+  m_max_iterations = iterations;
+  m_descriptors = descriptors;
+  m_n_words = size;
+  recompute();
+}
+
 void debug_img(const std::vector<ipb::sift> &sifts,
                const std::vector<ipb::sift> &centroids) {
   cv::Mat image(1000, 1600, CV_8UC3);
@@ -66,27 +89,40 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
   }
 
   std::cout << "Sift and centroid initialized succesfully!\n";
+  std::cout << "Total Sifts: " + std::to_string(sifts.size()) + "\n";
 
   for (int iter = 0; iter < max_iter; iter++) {
     // visualize debug image
     debug_img(sifts, centroids);
 
-    // calculate closest centroid for each point
-    for (sift &descriptor : sifts) {
-      descriptor.reset();
-      for (const sift &centroid : centroids) {
-        unsigned long int d = descriptor.distance(centroid);
-        if (d < descriptor.distance_to_cluster) {
-          descriptor.distance_to_cluster = d;
-          descriptor.cluster = centroid.cluster;
-        }
-      }
-    }
+    auto start_time = std::chrono::high_resolution_clock::now();
 
-    // Recalculate centroids
-    for (sift &centroid : centroids) {
-      centroid.clear();
-    }
+    // calculate closest centroid for each point. Parallel computing for more
+    // speed
+    std::for_each(std::execution::par, sifts.begin(), sifts.end(),
+                  [centroids](sift &descriptor) {
+                    descriptor.closest_centroid(centroids);
+                  });
+
+    // for (sift &descriptor : sifts) {
+    //   descriptor.reset();
+    //   for (const sift &centroid : centroids) {
+    //     unsigned long int d = descriptor.distance(centroid);
+    //     if (d < descriptor.distance_to_cluster) {
+    //       descriptor.distance_to_cluster = d;
+    //       descriptor.cluster = centroid.cluster;
+    //     }
+    //   }
+    // }
+
+    // Recalculate centroids. Parallel computing for more speed
+    std::for_each(std::execution::par, centroids.begin(), centroids.end(),
+                  [](sift &centroid) { centroid.clear(); });
+
+    // for (sift &centroid : centroids) {
+    //   centroid.clear();
+    // }
+
     for (const sift &descriptor : sifts) {
       centroids.at(descriptor.cluster) += descriptor;
       centroids.at(descriptor.cluster).associated_points++;
@@ -97,7 +133,13 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
       }
       centroid.associated_points = 0;
     }
-    std::cout << "Iteration " << iter + 1 << " completed!\n";
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+        end_time - start_time);
+    std::cout << "Iteration " << iter + 1
+              << " completed in " +
+                     std::to_string(((float)duration.count() / 1000.0f)) +
+                     " seconds!\n";
   }
 
   // generate output Mat
@@ -109,13 +151,14 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 }
 
 int main() {
-  std::vector<cv::Mat> sifts =
-      ipb::serialization::sifts::LoadDataset("../test_dataset");
   // std::vector<cv::Mat> sifts =
-  //     ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
+  //     ipb::serialization::sifts::LoadDataset("../test_dataset");
+  std::vector<cv::Mat> sifts =
+      ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
   // for (const auto &element : sifts) {
   //   std::cout << " ---- " << element.size << " ---- " << std::endl;
   // }
-  cv::Mat ans = ipb::kMeans(sifts, 20, 105);
+  ipb::BowDictionary &dictionary = ipb::BowDictionary::GetInstance();
+  dictionary.set_params(50, 25, sifts);
   // std::cout << ans << std::endl;
 }
