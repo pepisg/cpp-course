@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/pepis/Documents/cpp-course/homework_8/bin",
+  "command": "/usr/bin/c++   -I/home/pepis/Documents/cpp-course/homework_8/include -I/home/pepis/Documents/cpp-course/homework_8/io_tools    -std=gnu++17 -o CMakeFiles/task_1.dir/src/task_1.cpp.o -c /home/pepis/Documents/cpp-course/homework_8/src/task_1.cpp",
+  "file": "/home/pepis/Documents/cpp-course/homework_8/src/task_1.cpp"
+}
+]
