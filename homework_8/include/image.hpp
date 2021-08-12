@@ -5,8 +5,11 @@
 #include <math.h>
 #include <png++/png.hpp>
 #include <vector>
+#include <memory>
+#include <io_strategy.hpp>
 
 namespace igg {
+
 class Image {
 
 public:
@@ -26,11 +29,16 @@ public:
   void WriteToPgm(const std::string &file_name);
   void DownScale(int scale);
   void UpScale(int scale);
+  void ReadFromDisk(const std::string &file_name);
+  void WriteToDisk(const std::string &file_name);
+  void SetIoStrategy(std::shared_ptr<IoStrategy> strategy_ptr);
+
 
 private:
   int rows_ = 0;
   int cols_ = 0;
   std::vector<png::rgb_pixel> data_ = {};
+  std::shared_ptr<IoStrategy> io_strategy_ = nullptr;
 };
 
 } // namespace igg

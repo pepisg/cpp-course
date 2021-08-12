@@ -1,5 +1,5 @@
-#include <igg_image/io_tools.hpp>
 #include <image.hpp>
+#include <memory>
 
 igg::Image::Image(int rows, int cols) {
   rows_ = rows;
@@ -20,7 +20,6 @@ png::rgb_pixel igg::Image::at(int row, int col) const {
 }
 
 void igg::Image::UpScale(int scale) {
-  int scale_squared = scale * scale;
   std::vector<png::rgb_pixel> orig_data = data_;
   int orig_cols = cols_;
   rows_ = (int)rows_ * scale;
@@ -45,9 +44,26 @@ void igg::Image::DownScale(int scale) {
   data_.resize(rows_ * cols_);
 }
 
+void igg::Image::SetIoStrategy(std::shared_ptr<IoStrategy> strategy_ptr){
+  io_strategy_ = strategy_ptr;
+}
+
+void igg::Image::ReadFromDisk(const std::string &file_name){
+  if(!io_strategy_){
+    return;
+  }else{
+    ImageData image = io_strategy_->Read(file_name);
+    rows_ = image.rows;
+    cols_ = image.cols;
+    data_ = image.data;
+  }
+}
+
 int main() {
   std::cout << "hello" << std::endl;
   igg::Image img{26, 5};
+  img.SetIoStrategy(std::make_shared<PngIoStrategy>());
+  img.ReadFromDisk("../tests/dummy_file.png");
   img.UpScale(3);
   // img.DownScale(3);
   std::cout << "\n" << img.rows() << " " << img.cols() << std::endl;
