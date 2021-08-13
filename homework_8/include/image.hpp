@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include <io_strategy.hpp>
+#include <opencv2/core.hpp>
 
 namespace igg {
 
@@ -19,6 +20,7 @@ public:
 public:
   int rows() const;
   int cols() const;
+  std::vector<png::rgb_pixel> data() const;
 
 public:
   png::rgb_pixel at(int row, int col) const;

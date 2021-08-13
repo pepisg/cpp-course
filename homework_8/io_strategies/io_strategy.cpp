@@ -11,12 +11,19 @@ ImageData PngIoStrategy::Read(const std::string &file_name) const{
     output_data.cols = image.get_width();
     output_data.data.reserve(output_data.rows*output_data.cols);
     for(int i =0; i<output_data.rows*output_data.cols;i++){
-        output_data.data.push_back(image.get_pixel(i/output_data.cols, i%output_data.cols));
+        output_data.data.push_back(image.get_pixel(i%output_data.cols, i/output_data.cols));
     }
     return output_data;
 }
 
 bool PngIoStrategy::Write(const ImageData &image, const std::string &file_name) const{
+    png::image< png::rgb_pixel > out_img(image.rows, image.cols);
+    for (int r = 0; r < image.rows; ++r) {
+        for (int c = 0; c < image.cols; ++c) {
+            out_img[r][c] = image.data[r*image.cols+c];
+        }
+    }
+    out_img.write(file_name);
     return true;
 }
 
