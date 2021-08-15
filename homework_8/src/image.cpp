@@ -4,11 +4,12 @@
 #include <png++/rgb_pixel.hpp>
 #include <vector>
 
-void debug_image(const igg::Image& image){
+void debug_image(const igg::Image &image) {
   cv::Mat debug_img(image.rows(), image.cols(), CV_8UC3);
   int idx = 0;
-  for(const png::rgb_pixel& pixel : image.data()){
-    debug_img.at<cv::Vec3b>(idx) = cv::Vec3b(pixel.blue, pixel.green, pixel.red);
+  for (const png::rgb_pixel &pixel : image.data()) {
+    debug_img.at<cv::Vec3b>(idx) =
+        cv::Vec3b(pixel.blue, pixel.green, pixel.red);
     idx++;
   }
   cv::namedWindow("test");
@@ -34,9 +35,7 @@ png::rgb_pixel igg::Image::at(int row, int col) const {
   return data_[row * cols_ + col];
 }
 
-std::vector<png::rgb_pixel> igg::Image::data() const{
-  return data_;
-}
+std::vector<png::rgb_pixel> igg::Image::data() const { return data_; }
 
 void igg::Image::UpScale(int scale) {
   std::vector<png::rgb_pixel> orig_data = data_;
@@ -63,18 +62,18 @@ void igg::Image::DownScale(int scale) {
     }
   }
   rows_ = r;
-  cols_ = k/r;
+  cols_ = k / r;
   data_.resize(rows_ * cols_);
 }
 
-void igg::Image::SetIoStrategy(std::shared_ptr<IoStrategy> strategy_ptr){
+void igg::Image::SetIoStrategy(std::shared_ptr<IoStrategy> strategy_ptr) {
   io_strategy_ = strategy_ptr;
 }
 
-void igg::Image::ReadFromDisk(const std::string &file_name){
-  if(!io_strategy_){
+void igg::Image::ReadFromDisk(const std::string &file_name) {
+  if (!io_strategy_) {
     return;
-  }else{
+  } else {
     ImageData image = io_strategy_->Read(file_name);
     rows_ = image.rows;
     cols_ = image.cols;
@@ -82,11 +81,11 @@ void igg::Image::ReadFromDisk(const std::string &file_name){
   }
 }
 
-void igg::Image::WriteToDisk(const std::string &file_name){
-  if(!io_strategy_){
+void igg::Image::WriteToDisk(const std::string &file_name) {
+  if (!io_strategy_) {
     return;
-  }else{
-    ImageData image {rows_, cols_, data_};
+  } else {
+    ImageData image{rows_, cols_, data_};
     io_strategy_->Write(image, file_name);
   }
 }
@@ -96,7 +95,7 @@ int main() {
   igg::Image img{26, 5};
   img.SetIoStrategy(std::make_shared<PpmIoStrategy>());
   img.ReadFromDisk("../tests/lenna_out.ppm");
-  //img.UpScale(20);
+  // img.UpScale(20);
   debug_image(img);
   // img.DownScale(3);
   img.SetIoStrategy(std::make_shared<PngIoStrategy>());

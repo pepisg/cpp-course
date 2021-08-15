@@ -1,13 +1,13 @@
 #ifndef IMAGE_HPP_
 #define IMAGE_HPP_
 
+#include <io_strategy.hpp>
 #include <iostream>
 #include <math.h>
+#include <memory>
+#include <opencv2/core.hpp>
 #include <png++/png.hpp>
 #include <vector>
-#include <memory>
-#include <io_strategy.hpp>
-#include <opencv2/core.hpp>
 
 namespace igg {
 
@@ -34,7 +34,6 @@ public:
   void ReadFromDisk(const std::string &file_name);
   void WriteToDisk(const std::string &file_name);
   void SetIoStrategy(std::shared_ptr<IoStrategy> strategy_ptr);
-
 
 private:
   int rows_ = 0;
