@@ -94,11 +94,12 @@ void igg::Image::WriteToDisk(const std::string &file_name){
 int main() {
   std::cout << "hello" << std::endl;
   igg::Image img{26, 5};
-  img.SetIoStrategy(std::make_shared<PngIoStrategy>());
-  img.ReadFromDisk("../tests/lenna.png");
-  img.UpScale(2);
+  img.SetIoStrategy(std::make_shared<PpmIoStrategy>());
+  img.ReadFromDisk("../tests/lenna_out.ppm");
+  //img.UpScale(20);
   debug_image(img);
   // img.DownScale(3);
+  img.SetIoStrategy(std::make_shared<PngIoStrategy>());
   img.WriteToDisk("../tests/lenna_out.png");
   std::cout << "\n" << img.rows() << " " << img.cols() << std::endl;
   return 0;
