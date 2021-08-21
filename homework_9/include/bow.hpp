@@ -124,5 +124,27 @@ public:
   void save_vocabulary(const std::string &filename);
 };
 
+class Histogram {
+  Histogram();
+  Histogram(std::vector<int> data);
+  Histogram(cv::Mat descriptors, cv::Mat dictionary);
+
+  void operator<<(int i);
+  void WriteToCSV();
+  Histogram ReadFromCSV();
+
+  // Imitate stl_vector functionality
+  int &operator[](int i);
+  std::vector<int> data();
+  int size();
+  bool empty();
+  int *begin();
+  int *cbegin();
+  int *end();
+  int *cend();
+  // data members:
+  std::vector<int> data_;
+};
+
 } // namespace ipb
 #endif

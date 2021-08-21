@@ -151,10 +151,10 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 }
 
 int main() {
-  // std::vector<cv::Mat> sifts =
-  //     ipb::serialization::sifts::LoadDataset("../test_dataset");
   std::vector<cv::Mat> sifts =
-      ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
+      ipb::serialization::sifts::LoadDataset("../test_dataset");
+  // std::vector<cv::Mat> sifts =
+  // ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
   // for (const auto &element : sifts) {
   //   std::cout << " ---- " << element.size << " ---- " << std::endl;
   // }
