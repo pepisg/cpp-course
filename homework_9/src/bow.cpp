@@ -62,13 +62,12 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 
   // Sift array initialization
   for (const auto &element : descriptors) {
-    // sifts.push_back(element.colRange(cv::Range(0, 2)));
-    sifts.push_back(element);
+    sifts.push_back(element.colRange(cv::Range(0, 2)));
+    // sifts.push_back(element);
   }
 
-  // sifts = cv::Mat(14, 2, CV_32F, test_points);
-
   // Centroid Random initialization
+  srand((int)time(0));
   for (int16_t i = 0; i < k; i++) {
     cv::Mat centroid = sifts.row(0);
     centroid.reserve(sifts.cols);
@@ -90,7 +89,7 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
     // calculate closest centroid for each point.
     knn_matches.clear();
     matcher->knnMatch(sifts, centroids, knn_matches, 2);
-    debug_img(sifts, centroids, knn_matches);
+    // debug_img(sifts, centroids, knn_matches);
     // Recalculate centroids.
 
     centroids = cv::Scalar::all(0.0f);
@@ -103,7 +102,6 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
     for (int i = 0; i < centroids.rows; i++) {
       if (occurences[i] > 0) {
         centroids.row(i) = centroids.row(i) / (float)occurences[i];
-        std::cout << i << "->" << occurences[i] << std::endl;
       } else {
         centroids.row(i) = sifts.row(rand() % sifts.rows);
       }
@@ -120,14 +118,14 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 }
 
 int main() {
-  // std::vector<cv::Mat> sifts =
-  //     ipb::serialization::sifts::LoadDataset("../test_dataset");
   std::vector<cv::Mat> sifts =
-      ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
+      ipb::serialization::sifts::LoadDataset("../test_dataset");
+  // std::vector<cv::Mat> sifts =
+  // ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
   // for (const auto &element : sifts) {
   //   std::cout << " ---- " << element.size << " ---- " << std::endl;
   // }
-  cv::Mat ans_mat = ipb::kMeans(sifts, 1000, 100);
+  cv::Mat ans_mat = ipb::kMeans(sifts, 10, 100);
   ipb::BowDictionary &dictionary = ipb::BowDictionary::GetInstance();
   // dictionary.set_params(50, 25, sifts);
   // std::cout << ans << std::endl;

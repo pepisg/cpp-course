@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <chrono>
 #include <convert_dataset.hpp>
+#include <ctime>
 #include <execution>
 #include <functional>
 #include <iostream>
