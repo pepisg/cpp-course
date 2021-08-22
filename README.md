@@ -8,7 +8,7 @@ Thanks to them and to the University for posting this material and all the other
 
 ## Dependencies
 
-to work and build the files provided in this repo you need to install the following dependencies:
+To work and build the files provided in this repo you need to install the following dependencies:
 
 ### Ubuntu 20.04
 
@@ -16,7 +16,7 @@ To easily install alongisde Windows you can follow this [tutorial](https://itsfo
 
 ### Visual Studio Code (Recommended)
 
-I used VScode to work on this repo. To install it and use the suggested extensions and configuration you can follow these [instructions](https://github.com/nachovizzo/must-have-tools/wiki#modern-text-editors) by [Ignacio Vizzo](https://github.com/nachovizzo)
+I used VScode to work on this repo. To install it and use the suggested extensions and configuration you can follow these [instructions](https://github.com/nachovizzo/must-have-tools/wiki#modern-text-editors) by [Ignacio Vizzo](https://github.com/nachovizzo).
 
 ### OpenCV
 
@@ -66,8 +66,8 @@ To test this homework follow these instructions:
 
 ### K-Means C++ implementation
 
-For the `homework_7` a k-means algorithm was implemented in the [bow.cpp](homework_7/src/bow.cpp). It can be seen in action in the image below:
+For the `homework_7` a k-means algorithm was implemented in the [bow.cpp](homework_7/src/bow.cpp). It can be seen in action in the image below. Later in `homework_9` this functionality was implemented using the `flann`  implementation provided by `OpenCV`. This increased its execution speed significantly. 
+
 
 ![ Alt text](/docs/k_means.gif)
 
-Later in `homework_9` this functionality was implemented using the `flann`  implementation provided by `OpenCV`. This increased its execution speed significantly. 
