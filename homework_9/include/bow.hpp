@@ -32,69 +32,6 @@ namespace ipb {
  */
 cv::Mat kMeans(const std::vector<cv::Mat> &descriptors, int k, int max_iter);
 
-struct sift {
-  std::vector<int> descriptor;
-  int16_t cluster = -1;
-  unsigned long int distance_to_cluster = pow(2, 62) - 1;
-  int associated_points = 0;
-
-  sift();
-  sift(std::vector<int> d) { descriptor = d; }
-  sift(std::vector<int> d, int n) {
-    descriptor = d;
-    cluster = n;
-  }
-  sift(std::vector<int> d, int n, float d_to_clust) {
-    descriptor = d;
-    cluster = n;
-    distance_to_cluster = d_to_clust;
-  }
-  unsigned long int distance(const sift &p) const {
-    unsigned long int d = 0;
-    for (int i = 0; i < descriptor.size(); i++) {
-      d += pow((descriptor[i] - p.descriptor[i]), 2);
-    }
-    return d;
-  }
-  void closest_centroid(const std::vector<sift> &centroids) {
-    reset();
-    for (const sift &centroid : centroids) {
-      unsigned long int d = distance(centroid);
-      if (d < distance_to_cluster) {
-        distance_to_cluster = d;
-        cluster = centroid.cluster;
-      }
-    }
-  }
-  void reset() {
-    cluster = -1;
-    distance_to_cluster = pow(2, 62) - 1;
-  }
-  void print() {
-    for (int i = 0; i < descriptor.size(); i++) {
-      std::cout << descriptor[i] << " ";
-    }
-    std::cout << "\n";
-  }
-  void clear() {
-    for (int i = 0; i < descriptor.size(); i++) {
-      descriptor.at(i) = 0;
-    }
-  }
-  sift &operator+=(sift const &obj) {
-    for (int i = 0; i < descriptor.size(); i++) {
-      descriptor.at(i) += obj.descriptor[i];
-    }
-    return *this;
-  }
-  sift &operator/(int const &denom) {
-    for (int i = 0; i < descriptor.size(); i++) {
-      descriptor.at(i) = descriptor[i] / denom;
-    }
-    return *this;
-  }
-};
-
 class BowDictionary {
 private:
   BowDictionary() = default;
@@ -117,6 +54,7 @@ public:
     return m_dictionary.rows;
   }; // number of centroids / codewords
   cv::Mat vocabulary() const { return m_dictionary; };
+  cv::Mat &vocabulary() { return m_dictionary; };
   bool empty() { return m_dictionary.empty(); };
   // Setters methods
   void build(int iterations, int size, const std::vector<cv::Mat> &descriptors);
@@ -126,25 +64,40 @@ public:
 };
 
 class Histogram {
+public:
   Histogram();
-  Histogram(std::vector<int> data);
-  Histogram(cv::Mat descriptors, cv::Mat dictionary);
+  Histogram(std::vector<int> &data);
+  Histogram(cv::Mat &descriptors, cv::Mat &dictionary);
 
-  void operator<<(int i);
-  void WriteToCSV();
-  Histogram ReadFromCSV();
+  friend std::ostream &operator<<(std::ostream &out,
+                                  const Histogram &histogram) {
+    for (const auto &data_point : histogram.data_) {
+      out << data_point << " ";
+    }
+    out << std::endl;
+    return out;
+  }
+  void WriteToCSV(const std::string &filename);
+  void ReadFromCSV(const std::string &filename);
 
   // Imitate stl_vector functionality
-  int &operator[](int i);
-  std::vector<int> data();
-  int size();
-  bool empty();
-  int *begin();
-  int *cbegin();
-  int *end();
-  int *cend();
+  int &operator[](int i) { return data_[i]; };
+  int operator[](int i) const { return data_[i]; };
+  std::vector<int> data() const { return data_; };
+  int size() const { return data_.size(); };
+  bool empty() const { return data_.size() > 0 ? true : false; }
+  std::vector<int>::const_iterator begin() const { return data_.begin(); }
+  std::vector<int>::const_iterator cbegin() const { return data_.cbegin(); }
+  std::vector<int>::const_iterator end() const { return data_.end(); }
+  std::vector<int>::const_iterator cend() const { return data_.cend(); }
+
+private:
   // data members:
   std::vector<int> data_;
+  inline static cv::Ptr<cv::DescriptorMatcher> matcher_ = nullptr;
+  inline static std::vector<std::vector<cv::DMatch>> knn_matches;
+  inline static std::ifstream fin = std::ifstream();
+  inline static std::ofstream fout = std::ofstream();
 };
 
 } // namespace ipb

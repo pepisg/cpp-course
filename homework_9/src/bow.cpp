@@ -15,6 +15,43 @@ void ipb::BowDictionary::save_vocabulary(const std::string &filename) {
   ipb::serialization::Serialize(m_dictionary, filename);
 }
 
+ipb::Histogram::Histogram(std::vector<int> &data) {
+  matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+  data_ = data;
+}
+
+ipb::Histogram::Histogram(cv::Mat &descriptors, cv::Mat &dictionary) {
+  matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+  knn_matches.clear();
+  matcher_->knnMatch(descriptors, dictionary, knn_matches, 1);
+  data_.resize(dictionary.rows);
+  for (const auto &match : knn_matches) {
+    data_[match[0].trainIdx]++;
+  }
+}
+
+void ipb::Histogram::WriteToCSV(const std::string &filename) {
+  fout.open(filename);
+  for (const auto &element : data_) {
+    fout << element << ",";
+  }
+  fout.close();
+}
+
+void ipb::Histogram::ReadFromCSV(const std::string &filename) {
+  fin.open(filename);
+  if (fin.is_open()) {
+    std::string csv_value;
+    while (std::getline(fin, csv_value, ',')) {
+      data_.emplace_back(stoi(csv_value));
+    }
+    fin.close();
+  } else {
+    std::cerr << "Could not open file " << filename << std::endl;
+    fin.close();
+  }
+}
+
 void debug_img(const cv::Mat &sifts, const cv::Mat &centroids,
                const std::vector<std::vector<cv::DMatch>> &matches) {
   cv::Mat image(1000, 1600, CV_8UC3);
@@ -88,13 +125,12 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 
     // calculate closest centroid for each point.
     knn_matches.clear();
-    matcher->knnMatch(sifts, centroids, knn_matches, 2);
-    // debug_img(sifts, centroids, knn_matches);
+    matcher->knnMatch(sifts, centroids, knn_matches, 1);
+    debug_img(sifts, centroids, knn_matches);
     // Recalculate centroids.
 
     centroids = cv::Scalar::all(0.0f);
     std::fill(occurences.begin(), occurences.end(), 0);
-    std::cout << knn_matches.size() << std::endl;
     for (const auto &match : knn_matches) {
       centroids.row(match[0].trainIdx) += sifts.row(match[0].queryIdx);
       occurences[match[0].trainIdx]++;
@@ -125,8 +161,11 @@ int main() {
   // for (const auto &element : sifts) {
   //   std::cout << " ---- " << element.size << " ---- " << std::endl;
   // }
-  cv::Mat ans_mat = ipb::kMeans(sifts, 10, 100);
+  // cv::Mat ans_mat = ipb::kMeans(sifts, 10, 100);
   ipb::BowDictionary &dictionary = ipb::BowDictionary::GetInstance();
+  dictionary.build(50, 50, sifts);
+  ipb::Histogram histogram = ipb::Histogram(sifts[0], dictionary.vocabulary());
+  histogram.WriteToCSV("test_file.csv");
   // dictionary.set_params(50, 25, sifts);
   // std::cout << ans << std::endl;
 }
