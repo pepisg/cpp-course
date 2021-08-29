@@ -99,8 +99,9 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 
   // Sift array initialization
   for (const auto &element : descriptors) {
-    sifts.push_back(element.colRange(cv::Range(0, 2)));
-    // sifts.push_back(element);
+    // sifts.push_back(element.colRange(cv::Range(0, 2)));  //use 2d data for
+    // debugging
+    sifts.push_back(element);
   }
 
   // Centroid Random initialization
@@ -126,9 +127,9 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
     // calculate closest centroid for each point.
     knn_matches.clear();
     matcher->knnMatch(sifts, centroids, knn_matches, 1);
-    debug_img(sifts, centroids, knn_matches);
-    // Recalculate centroids.
+    // debug_img(sifts, centroids, knn_matches);
 
+    // Recalculate centroids.
     centroids = cv::Scalar::all(0.0f);
     std::fill(occurences.begin(), occurences.end(), 0);
     for (const auto &match : knn_matches) {
@@ -154,16 +155,17 @@ cv::Mat ipb::kMeans(const std::vector<cv::Mat> &descriptors, int k,
 }
 
 int main() {
-  std::vector<cv::Mat> sifts =
-      ipb::serialization::sifts::LoadDataset("../test_dataset");
   // std::vector<cv::Mat> sifts =
-  // ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
+  //     ipb::serialization::sifts::LoadDataset("../test_dataset");
+  std::vector<cv::Mat> sifts =
+      ipb::serialization::sifts::LoadDataset("../../dataset/final_project/bin");
   // for (const auto &element : sifts) {
   //   std::cout << " ---- " << element.size << " ---- " << std::endl;
   // }
   // cv::Mat ans_mat = ipb::kMeans(sifts, 10, 100);
   ipb::BowDictionary &dictionary = ipb::BowDictionary::GetInstance();
-  dictionary.build(50, 50, sifts);
+  dictionary.build(300, 10000, sifts);
+  dictionary.save_vocabulary("dictionary.bin");
   ipb::Histogram histogram = ipb::Histogram(sifts[0], dictionary.vocabulary());
   histogram.WriteToCSV("test_file.csv");
   // dictionary.set_params(50, 25, sifts);

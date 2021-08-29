@@ -30,6 +30,22 @@ Its a compile dependency for `homework_8`. You can install it using the package 
 sudo apt install libpng++-dev
 ```
 
+### boost
+
+Its a compile dependency for `homework_3`. You can install it using the package manager:
+
+```.sh
+sudo apt-get install libboost-all-dev
+```
+
+### fmt
+
+Its a compile dependency for `homework_3`. You can install it using the package manager:
+
+```.sh
+sudo apt-get install libfmt-dev
+```
+
 ## Code Insights
 
 ### Homework 2
@@ -66,7 +82,7 @@ To test this homework follow these instructions:
 
 ### K-Means C++ implementation
 
-For the `homework_7` a k-means algorithm was implemented in the [bow.cpp](homework_7/src/bow.cpp). It can be seen in action in the image below. Later in `homework_9` this functionality was implemented using the `flann`  implementation provided by `OpenCV`. This increased its execution speed significantly. 
+For the `homework_7` a k-means algorithm was implemented in the [bow.cpp](homework_7/src/bow.cpp). It can be seen in action in the image below. Later in `homework_9` this was chaged to use the `flann`  implementation provided by `OpenCV`. This increased its execution speed significantly.
 
 
 ![ Alt text](/docs/k_means.gif)
